@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:video_controls/pause_button.dart';
+import 'package:video_controls/play_button.dart';
+import 'package:video_controls/restart_button.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoControls extends StatefulWidget {
@@ -16,7 +19,10 @@ class _VideoControls extends State<VideoControls> {
   void initState() {
     _controller = VideoPlayerController.network(widget.url)
       ..initialize().then((_) {
-        setState(() {});
+        setState(() {
+          _controller.seekTo(const Duration(seconds: 10));
+          _controller.play();
+        });
       });
     _controller.play();
     super.initState();
@@ -31,39 +37,46 @@ class _VideoControls extends State<VideoControls> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        //child: _controller.value.isInitialized ?
         body: Column(
       children: [
         AspectRatio(
           aspectRatio: _controller.value.aspectRatio,
           child: VideoPlayer(_controller),
         ),
-        Text('${getVideoPosition()}'),
+        const SizedBox(
+          height: 10,
+        ),
+        VideoProgressIndicator(_controller,
+            allowScrubbing: true,
+            padding: const EdgeInsets.symmetric(horizontal: 10)),
+        const SizedBox(
+          height: 10,
+        ),
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            InkWell(
-              onTap: () {
-                _controller.pause();
-              },
-              child: const Text('Pause'),
+            Expanded(child: PlayButton(controller: _controller)),
+            Expanded(
+              child: PauseButton(
+                controller: _controller,
+              ),
             ),
-            const SizedBox(width: 10,),
-            InkWell(
-              onTap: () {
-                _controller.play();
-              },
-              child: const Text('Play'),
-            ),
+            Expanded(
+              child: ReStartButton(
+                controller: _controller,
+              ),
+            )
           ],
         )
-
       ],
     ));
   }
+
   getVideoPosition() {
-    var duration = Duration(milliseconds: _controller.value.position.inMilliseconds.round());
-    return [duration.inMinutes, duration.inSeconds].map((seg) => seg.remainder(60).toString().padLeft(2, '0')).join(':');
+    var duration = Duration(
+        milliseconds: _controller.value.position.inMilliseconds.round());
+    return [duration.inMinutes, duration.inSeconds]
+        .map((seg) => seg.remainder(60).toString().padLeft(2, '0'))
+        .join(':');
   }
 }
-
-
