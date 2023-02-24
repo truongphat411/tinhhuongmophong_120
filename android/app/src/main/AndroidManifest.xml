@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.video_controls">
+    package="com.gplx.tinhhuongmophong_120">
    <application
-        android:label="video_controls"
+        android:label="tinhhuongmophong_120"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

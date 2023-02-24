@@ -1,4 +1,4 @@
-package com.example.video_controls
+package com.gplx.tinhhuongmophong_120
 
 import io.flutter.embedding.android.FlutterActivity
 
