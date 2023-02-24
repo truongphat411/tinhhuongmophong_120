@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:video_controls/modules/video_controls/pages/video_controls.dart';
+import 'package:tinhhuongmophong_120/modules/video_controls/pages/video_controls.dart';
 
 void main() {
   runApp(MaterialApp(

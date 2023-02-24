@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:video_controls/modules/video_controls/components/pause_button.dart';
-import 'package:video_controls/modules/video_controls/components/play_button.dart';
-import 'package:video_controls/modules/video_controls/components/restart_button.dart';
+import 'package:tinhhuongmophong_120/modules/video_controls/components/pause_button.dart';
+import 'package:tinhhuongmophong_120/modules/video_controls/components/play_button.dart';
+import 'package:tinhhuongmophong_120/modules/video_controls/components/restart_button.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoControls extends StatefulWidget {
