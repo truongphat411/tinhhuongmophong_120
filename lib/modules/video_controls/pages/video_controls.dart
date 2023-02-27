@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:tinhhuongmophong_120/modules/video_controls/components/pause_button.dart';
-import 'package:tinhhuongmophong_120/modules/video_controls/components/play_button.dart';
-import 'package:tinhhuongmophong_120/modules/video_controls/components/restart_button.dart';
+import 'package:flutter/services.dart';
+import 'package:native_device_orientation/native_device_orientation.dart';
+import 'package:provider/provider.dart';
+import 'package:tinhhuongmophong_120/modules/video_controls/components/custom_button.dart';
+import 'package:tinhhuongmophong_120/modules/video_controls/provider/video_provider.dart';
 import 'package:video_player/video_player.dart';
+import 'package:wakelock/wakelock.dart';
 
 class VideoControls extends StatefulWidget {
   VideoControls({super.key, required this.url});
+
   String url;
 
   @override
@@ -14,19 +18,37 @@ class VideoControls extends StatefulWidget {
 
 class _VideoControls extends State<VideoControls> {
   late VideoPlayerController _controller;
+  Orientation? target;
 
   @override
   void initState() {
-    _controller = VideoPlayerController.network(widget.url)
-      ..initialize().then((_) {
-        setState(() {
-          _controller.seekTo(const Duration(seconds: 10));
-          _controller.play();
-        });
-      });
-    _controller.play();
     super.initState();
+    _controller = VideoPlayerController.network(widget.url)..initialize();
+    // NativeDeviceOrientationCommunicator()
+    //     .onOrientationChanged(useSensor: true)
+    //     .listen((event) {
+    //   final isPortrait = event == NativeDeviceOrientation.portraitUp;
+    //   final isLandscape = event == NativeDeviceOrientation.landscapeLeft ||
+    //       event == NativeDeviceOrientation.landscapeRight;
+    //   final isTargetPortrait = target == Orientation.portrait;
+    //   final isTargetLandscape = target == Orientation.landscape;
+    //
+    //   if (isPortrait && isTargetPortrait || isLandscape && isTargetLandscape) {
+    //     target = null;
+    //     SystemChrome.setPreferredOrientations(DeviceOrientation.values);
+    //   }
+    // });
   }
+
+  // void setOrientation(bool isPortrait) {
+  //   if (isPortrait) {
+  //     Wakelock.disable();
+  //     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+  //   } else {
+  //     Wakelock.enable();
+  //     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+  //   }
+  // }
 
   @override
   void dispose() {
@@ -36,47 +58,92 @@ class _VideoControls extends State<VideoControls> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Column(
+    return ChangeNotifierProvider(
+        create: (context) => VideoProvider(controller: _controller),
+      child: Builder(
+        builder: (context) {
+          return Consumer<VideoProvider>(builder:
+              (context, videoProvider, child) {
+            return Scaffold(
+                appBar: AppBar(title: const Text("120 tình huống mô phỏng")),
+                body: Column(
+                  children: [
+                    _videoPlayer(context, videoProvider),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    VideoProgressIndicator(_controller,
+                        allowScrubbing: true,
+                        padding: const EdgeInsets.symmetric(horizontal: 10)),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    _controlsButton(context, videoProvider)
+                  ],
+                ));
+          });
+        },
+      ),
+    );
+  }
+
+  Widget _videoPlayer(BuildContext context, VideoProvider videoProvider){
+    return Stack(
       children: [
         AspectRatio(
           aspectRatio: _controller.value.aspectRatio,
           child: VideoPlayer(_controller),
         ),
-        const SizedBox(
-          height: 10,
-        ),
-        VideoProgressIndicator(_controller,
-            allowScrubbing: true,
-            padding: const EdgeInsets.symmetric(horizontal: 10)),
-        const SizedBox(
-          height: 10,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Expanded(child: PlayButton(controller: _controller)),
-            Expanded(
-              child: PauseButton(
-                controller: _controller,
-              ),
-            ),
-            Expanded(
-              child: ReStartButton(
-                controller: _controller,
-              ),
-            )
-          ],
-        )
+        Positioned(
+            bottom: 0,
+            right: 0,
+            child: Row(
+              children: [
+                const SizedBox(width: 12),
+                GestureDetector(
+                  onTap: (){},
+                  child: const Icon(
+                    Icons.fullscreen,
+                    color: Colors.white,
+                    size: 28,
+                  ),
+                ),
+                const SizedBox(width: 8),
+              ],
+            )),
       ],
-    ));
+    );
   }
 
-  getVideoPosition() {
-    var duration = Duration(
-        milliseconds: _controller.value.position.inMilliseconds.round());
-    return [duration.inMinutes, duration.inSeconds]
-        .map((seg) => seg.remainder(60).toString().padLeft(2, '0'))
-        .join(':');
+  Widget _controlsButton(BuildContext context, VideoProvider videoProvider){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Flexible(
+            child: CustomButton(
+                text: 'Phát video',
+                controller: _controller,
+                icon: Icons.play_arrow,
+                color: videoProvider.isPlaying ? Colors.grey : Colors.blue,
+                onClickCallback: () => videoProvider.isPlaying ? null : videoProvider.checkPlaying(isActive: true,status: 'play')
+            )),
+        Flexible(
+            child: CustomButton(
+                text: 'Dừng video',
+                controller: _controller,
+                icon: Icons.pause,
+                color: videoProvider.isPlaying ? Colors.blue : Colors.grey,
+                onClickCallback: () => videoProvider.isPlaying ? videoProvider.checkPlaying(isActive: false, status: 'pause') : null
+            )),
+        Flexible(
+            child: CustomButton(
+                text: 'Lặp lại',
+                controller: _controller,
+                icon: Icons.loop,
+                color: videoProvider.isPlaying ? Colors.blue : Colors.grey,
+                onClickCallback: () => videoProvider.isPlaying ? videoProvider.checkPlaying(isActive: true, status: 'again') : null
+            )),
+      ],
+    );
   }
 }
