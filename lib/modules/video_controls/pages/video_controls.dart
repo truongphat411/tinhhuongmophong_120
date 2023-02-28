@@ -70,46 +70,103 @@ class _VideoControls extends State<VideoControls> {
         builder: (context) {
           return Consumer<VideoProvider>(
               builder: (context, videoProvider, child) =>
-                  controller.value.isInitialized ?
-                           Container(
-                              alignment: Alignment.topCenter,
-                              color: Colors.red,
-                              child: _videoPlayer(),
-                            )
+                  controller.value.isInitialized
+                      ? _videoPlayer(videoProvider)
                       : const Center(child: CircularProgressIndicator()));
         },
       ),
     );
   }
 
-  Widget _videoPlayer() => OrientationBuilder(
+  Widget _videoPlayer(VideoProvider videoProvider) => OrientationBuilder(
         builder: (context, orientation) {
           final isPortrait = orientation == Orientation.portrait;
 
           setOrientation(isPortrait);
 
-          return Stack(
-            fit: isPortrait ? StackFit.loose : StackFit.expand,
-            children: <Widget>[
-              buildVideoPlayer(),
-              Positioned.fill(
-                child: AdvancedOverlayWidget(
-                  controller: controller,
-                  onClickedFullScreen: () {
-                    target = isPortrait
-                        ? Orientation.landscape
-                        : Orientation.portrait;
+          return isPortrait
+              ? Column(
+                  children: [
+                    Stack(
+                      fit: StackFit.loose,
+                      children: [
+                        buildVideoPlayer(),
+                        Positioned.fill(
+                          child: AdvancedOverlayWidget(
+                            controller: controller,
+                            onClickedFullScreen: () {
+                              target = isPortrait
+                                  ? Orientation.landscape
+                                  : Orientation.portrait;
 
-                    if (isPortrait) {
-                      AutoOrientation.landscapeRightMode();
-                    } else {
-                      AutoOrientation.portraitUpMode();
-                    }
-                  },
-                ),
-              ),
-            ],
-          );
+                              if (isPortrait) {
+                                AutoOrientation.landscapeRightMode();
+                              } else {
+                                AutoOrientation.portraitUpMode();
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    _controlsButton(context, videoProvider)
+                  ],
+                )
+              : Stack(
+                  //fit: StackFit.expand,
+                  alignment: Alignment.topLeft,
+                  children: [
+                    // _controlsButton(context, videoProvider),
+                     buildVideoPlayer(),
+                    Container(
+                      color: Colors.red,
+                      width: 100,
+                      height: 100,
+                    ),
+                    Positioned.fill(
+                      child: AdvancedOverlayWidget(
+                        controller: controller,
+                        onClickedFullScreen: () {
+                          target = isPortrait
+                              ? Orientation.landscape
+                              : Orientation.portrait;
+
+                          if (isPortrait) {
+                            AutoOrientation.landscapeRightMode();
+                          } else {
+                            AutoOrientation.portraitUpMode();
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                );
+
+          // return Stack(
+          //   fit: isPortrait ? StackFit.loose : StackFit.expand,
+          //   children: <Widget>[
+          //     buildVideoPlayer(),
+          //     Positioned.fill(
+          //       child: AdvancedOverlayWidget(
+          //         controller: controller,
+          //         onClickedFullScreen: () {
+          //           target = isPortrait
+          //               ? Orientation.landscape
+          //               : Orientation.portrait;
+          //
+          //           if (isPortrait) {
+          //             AutoOrientation.landscapeRightMode();
+          //           } else {
+          //             AutoOrientation.portraitUpMode();
+          //           }
+          //         },
+          //       ),
+          //     ),
+          //   ],
+          // );
         },
       );
 
@@ -119,7 +176,7 @@ class _VideoControls extends State<VideoControls> {
       child: VideoPlayer(controller),
     );
 
-    return video;
+    return buildFullScreen(child: video);
   }
 
   Widget buildFullScreen({
