@@ -11,9 +11,10 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Material(
-        child: VideoControls(
-            url: "https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4")
+    return Scaffold(
+        appBar: AppBar(toolbarHeight: 0),
+        body: VideoControls(
+            url: "https://assets.mixkit.co/videos/preview/mixkit-group-of-friends-partying-happily-4640-large.mp4")
     );
   }
 }
