@@ -22,33 +22,33 @@ class AdvancedOverlayWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Stack(
-    children: <Widget>[
-      Positioned(
-        left: 8,
-        bottom: 28,
-        child: Text(getPosition()),
-      ),
-      Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: Row(
-            children: [
-              Expanded(child: buildIndicator()),
-              const SizedBox(width: 12),
-              GestureDetector(
-                onTap: onClickedFullScreen,
-                child: const Icon(
-                  Icons.fullscreen,
-                  color: Colors.white,
-                  size: 28,
-                ),
-              ),
-              const SizedBox(width: 8),
-            ],
-          )),
-    ],
-  );
+        children: <Widget>[
+          Positioned(
+            left: 8,
+            bottom: 28,
+            child: Text(getPosition()),
+          ),
+          Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Row(
+                children: [
+                  Expanded(child: buildIndicator()),
+                  const SizedBox(width: 12),
+                  GestureDetector(
+                    onTap: onClickedFullScreen,
+                    child: const Icon(
+                      Icons.fullscreen,
+                      color: Colors.white,
+                      size: 28,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                ],
+              )),
+        ],
+      );
 
   Widget buildIndicator() => Container(
         margin: const EdgeInsets.all(8).copyWith(right: 0),

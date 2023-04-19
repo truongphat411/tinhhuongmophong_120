@@ -90,6 +90,14 @@ class _VideoControls extends State<VideoControls> {
                     Stack(
                       fit: StackFit.loose,
                       children: [
+                        Positioned.fromRect(
+                          rect: Rect.fromCenter(
+                              center: Offset.zero, width: 0, height: 0),
+                          child: const Center(
+                            child: Text('center',
+                                style: TextStyle(color: Colors.white)),
+                          ),
+                        ),
                         buildVideoPlayer(),
                         Positioned.fill(
                           child: AdvancedOverlayWidget(
@@ -116,15 +124,93 @@ class _VideoControls extends State<VideoControls> {
                   ],
                 )
               : Stack(
-                  //fit: StackFit.expand,
-                  alignment: Alignment.topLeft,
+                  fit: StackFit.expand,
+                  //alignment: Alignment.topLeft,
                   children: [
                     // _controlsButton(context, videoProvider),
-                     buildVideoPlayer(),
-                    Container(
-                      color: Colors.red,
-                      width: 100,
-                      height: 100,
+                    buildVideoPlayer(),
+                    Positioned(
+                      bottom: 50,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            child: Container(
+                              width: 50,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color:
+                                      const Color.fromRGBO(192, 192, 192, 0.5)),
+                              child: const Padding(
+                                padding: EdgeInsets.all(10),
+                                child: Icon(
+                                  Icons.play_arrow,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          InkWell(
+                            child: Container(
+                              width: 50,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color:
+                                      const Color.fromRGBO(192, 192, 192, 0.5)),
+                              child: const Padding(
+                                padding: EdgeInsets.all(10),
+                                child: Icon(
+                                  Icons.pause,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          InkWell(
+                            child: Container(
+                              width: 50,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color:
+                                      const Color.fromRGBO(192, 192, 192, 0.5)),
+                              child: const Padding(
+                                padding: EdgeInsets.all(10),
+                                child: Icon(
+                                  Icons.loop,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 50,
+                      right: 0,
+                      child: InkWell(
+                        child: Container(
+                          width: 100,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: const Color.fromRGBO(192, 192, 192, 0.5)),
+                          child: const Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Center(
+                                child: Text(
+                                  'Space',
+                                  style: TextStyle(
+                                      fontSize: 24, color: Colors.white),
+                                ),
+                              )),
+                        ),
+                      ),
                     ),
                     Positioned.fill(
                       child: AdvancedOverlayWidget(
@@ -192,40 +278,67 @@ class _VideoControls extends State<VideoControls> {
   }
 
   Widget _controlsButton(BuildContext context, VideoProvider videoProvider) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        Flexible(
-            child: CustomButton(
-                text: 'Phát video',
-                controller: controller,
-                icon: Icons.play_arrow,
-                color: videoProvider.isPlaying ? Colors.grey : Colors.blue,
-                onClickCallback: () => videoProvider.isPlaying
-                    ? null
-                    : videoProvider.checkPlaying(
-                        isActive: true, status: 'play'))),
-        Flexible(
-            child: CustomButton(
-                text: 'Dừng video',
-                controller: controller,
-                icon: Icons.pause,
-                color: videoProvider.isPlaying ? Colors.blue : Colors.grey,
-                onClickCallback: () => videoProvider.isPlaying
-                    ? videoProvider.checkPlaying(
-                        isActive: false, status: 'pause')
-                    : null)),
-        Flexible(
-            child: CustomButton(
-                text: 'Lặp lại',
-                controller: controller,
-                icon: Icons.loop,
-                color: videoProvider.isPlaying ? Colors.blue : Colors.grey,
-                onClickCallback: () => videoProvider.isPlaying
-                    ? videoProvider.checkPlaying(
-                        isActive: true, status: 'again')
-                    : null)),
-      ],
+    return IntrinsicWidth(
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                  child: CustomButton(
+                      text: 'Phát video',
+                      controller: controller,
+                      icon: Icons.play_arrow,
+                      color:
+                          videoProvider.isPlaying ? Colors.grey : Colors.blue,
+                      onClickCallback: () => videoProvider.isPlaying
+                          ? null
+                          : videoProvider.checkPlaying(
+                              isActive: true, status: 'play'))),
+              //const SizedBox(width: 20,),
+              Expanded(
+                  child: CustomButton(
+                      text: 'Dừng video',
+                      controller: controller,
+                      icon: Icons.pause,
+                      color:
+                          videoProvider.isPlaying ? Colors.blue : Colors.grey,
+                      onClickCallback: () => videoProvider.isPlaying
+                          ? videoProvider.checkPlaying(
+                              isActive: false, status: 'pause')
+                          : null)),
+              //const SizedBox(width: 20,),
+              Expanded(
+                  child: CustomButton(
+                      text: 'Lặp lại',
+                      controller: controller,
+                      icon: Icons.loop,
+                      color:
+                          videoProvider.isPlaying ? Colors.blue : Colors.grey,
+                      onClickCallback: () => videoProvider.isPlaying
+                          ? videoProvider.checkPlaying(
+                              isActive: true, status: 'again')
+                          : null)),
+            ],
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          GestureDetector(
+            onTap: () {},
+            child: Container(
+              height: 50,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.blue,
+              ),
+              child: const Center(
+                child: Text('Space', style: TextStyle(fontSize: 24)),
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 }
