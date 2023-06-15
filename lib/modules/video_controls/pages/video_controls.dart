@@ -10,9 +10,9 @@ import 'package:video_player/video_player.dart';
 import 'package:wakelock/wakelock.dart';
 
 class VideoControls extends StatefulWidget {
-  VideoControls({super.key, required this.url});
+  const VideoControls({super.key});
 
-  String url;
+  //String url;
 
   @override
   State<VideoControls> createState() => _VideoControls();
@@ -25,7 +25,7 @@ class _VideoControls extends State<VideoControls> {
   @override
   void initState() {
     super.initState();
-    controller = VideoPlayerController.network(widget.url)
+    controller = VideoPlayerController.network('https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4')
       ..initialize().then((_) {
         setState(() {});
       });
@@ -66,14 +66,16 @@ class _VideoControls extends State<VideoControls> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => VideoProvider(controller: controller),
-      child: Builder(
-        builder: (context) {
-          return Consumer<VideoProvider>(
-              builder: (context, videoProvider, child) =>
-                  controller.value.isInitialized
-                      ? _videoPlayer(videoProvider)
-                      : const Center(child: CircularProgressIndicator()));
-        },
+      child: Scaffold(
+        body: Builder(
+          builder: (context) {
+            return Consumer<VideoProvider>(
+                builder: (context, videoProvider, child) =>
+                    controller.value.isInitialized
+                        ? _videoPlayer(videoProvider)
+                        : const Center(child: CircularProgressIndicator()));
+          },
+        ),
       ),
     );
   }

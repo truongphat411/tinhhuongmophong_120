@@ -1,5 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.gplx.tinhhuongmophong_120">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+
    <application
         android:label="tinhhuongmophong_120"
         android:name="${applicationName}"
