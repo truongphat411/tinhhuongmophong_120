@@ -9,12 +9,12 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     // SystemChrome.setSystemUIOverlayStyle(
     //     const SystemUiOverlayStyle(statusBarColor: Colors.blue));
-    List catNames = [
+    List<String> catNames = [
       "Thi thử",
       "Câu sai",
       "Câu điểm thấp",
       "Câu đã lưu",
-      "600 Câu hỏi ôn thi GPLX",
+      "600 câu hỏi ôn thi GPLX",
     ];
 
     List<Color> catColors = const [
@@ -26,32 +26,30 @@ class HomePage extends StatelessWidget {
       //Color(0xFF78E667),
     ];
 
-    List<Icon> catIcons = const [
-      Icon(
+    List catIcons = [
+      const Icon(
         Icons.assignment,
         color: Colors.white,
         size: 30,
       ),
-      Icon(
+      const Icon(
         Icons.close,
         color: Colors.white,
         size: 30,
       ),
-      Icon(
+      const Icon(
         Icons.error_outlined,
         color: Colors.white,
         size: 30,
       ),
-      Icon(
+      const Icon(
         Icons.save_as_rounded,
         color: Colors.white,
         size: 30,
       ),
-      Icon(
-        Icons.play_circle_fill,
-        color: Colors.white,
-        size: 30,
-      ),
+      // Image.asset(
+      //   'assets/images/icon_app.png',
+      // ),
       // Icon(
       //   Icons.emoji_events,
       //   color: Colors.white,
@@ -149,20 +147,19 @@ class HomePage extends StatelessWidget {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(
-                    left: 15, right: 15, top: 20, bottom: 10),
-                child: Column(
-                  children: [
-                    GridView.builder(
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 20),
+                    child: GridView.builder(
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3, childAspectRatio: 1.1),
+                              crossAxisCount: 3, childAspectRatio: 0.9),
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: catNames.length,
                       itemBuilder: (context, index) {
-                        return Column(
+                        return catNames[index] != '600 câu hỏi ôn thi GPLX' ? Column(
                           children: [
                             Container(
                               width: 60,
@@ -186,13 +183,37 @@ class HomePage extends StatelessWidget {
                                 color: Colors.black.withOpacity(0.7),
                               ),
                               textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ) : Column(
+                          children: [
+                            Container(
+                              width: 60,
+                              height: 60,
+                              decoration: const BoxDecoration(
+                                image: DecorationImage(image: AssetImage('assets/images/icon_600.png'),fit: BoxFit.cover),
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              catNames[index],
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black.withOpacity(0.7),
+                              ),
+                              textAlign: TextAlign.center,
                             )
                           ],
                         );
                       },
-                    )
-                  ],
-                ),
+                    ),
+                  )
+                ],
               ),
               Container(
                   padding: const EdgeInsets.only(right: 15, left: 15),
